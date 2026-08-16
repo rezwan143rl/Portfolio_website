@@ -38,7 +38,7 @@ export default async function ResumePage() {
               </a>
             </Button>
 
-            <Button asChild size="lg" variant="outline">
+            <Button asChild size="lg" variant="secondary">
               <a href={settings.resume_url} download>
                 Download Resume
               </a>
