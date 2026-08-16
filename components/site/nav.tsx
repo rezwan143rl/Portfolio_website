@@ -20,12 +20,21 @@ export function Nav() {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-bg/80 backdrop-blur">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-        <Link href="/" className="font-display text-sm font-medium tracking-wide text-text">
-          REZWAN AHMED
-        </Link>
+        <Link
+  href="/"
+  className="flex items-center gap-2 font-display text-sm font-medium tracking-wide text-text"
+>
+  <img
+    src="/logo.png"
+    alt="Rezwan Ahmed"
+    className="h-7 w-7 object-contain"
+  />
+  <span>REZWAN AHMED</span>
+</Link>
         <nav className="hidden gap-6 md:flex">
           {links.map((link) => {
-            const active = pathname.startsWith(link.href);
+            const active =
+  link.href === '/' ? pathname === '/' : pathname.startsWith(link.href);
             return (
               <Link
                 key={link.href}
