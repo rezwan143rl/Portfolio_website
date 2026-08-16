@@ -4,10 +4,11 @@ export async function uploadToMediaBucket(file: File): Promise<{ url: string; pa
   const supabase = createClient();
   const path = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
 
-  const { error } = await supabase.storage.from('media').upload(path, file, {
-    cacheControl: '3600',
-    upsert: false,
-  });
+const { error } = await supabase.storage.from('media').upload(path, file, {
+  cacheControl: '3600',
+  contentType: file.type,
+  upsert: false,
+});
   if (error) return { error: error.message };
 
   const { data } = supabase.storage.from('media').getPublicUrl(path);
