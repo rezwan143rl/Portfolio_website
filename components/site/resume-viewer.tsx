@@ -1,7 +1,7 @@
 'use client';
 
 import { Document, Page, pdfjs } from 'react-pdf';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 pdfjs.GlobalWorkerOptions.workerSrc =
   `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
@@ -9,6 +9,29 @@ pdfjs.GlobalWorkerOptions.workerSrc =
 export function ResumeViewer({ url }: { url: string }) {
   const [numPages, setNumPages] = useState<number | null>(null);
   const [error, setError] = useState(false);
+  const [width, setWidth] = useState<number>(700);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const updateWidth = () => {
+      if (containerRef.current) {
+        const availableWidth = containerRef.current.clientWidth;
+
+        // Keep a little padding around the PDF
+        setWidth(Math.min(700, Math.max(280, availableWidth - 24)));
+      }
+    };
+
+    updateWidth();
+
+    const observer = new ResizeObserver(updateWidth);
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <div className="overflow-hidden rounded-lg border border-border bg-surface">
@@ -36,7 +59,10 @@ export function ResumeViewer({ url }: { url: string }) {
           </div>
         </div>
       ) : (
-        <div className="max-h-[80vh] overflow-auto p-3 sm:p-6">
+        <div
+          ref={containerRef}
+          className="max-h-[80vh] overflow-y-auto overflow-x-hidden p-3 sm:p-6"
+        >
           <Document
             file={url}
             onLoadSuccess={({ numPages }) => setNumPages(numPages)}
@@ -57,7 +83,7 @@ export function ResumeViewer({ url }: { url: string }) {
                 >
                   <Page
                     pageNumber={index + 1}
-                    width={700}
+                    width={width}
                   />
                 </div>
               ))}
